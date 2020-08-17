@@ -21,6 +21,7 @@
 }
 overrides ::= type_name
   | column_constraint
+  | column_name
   | bind_parameter
 
 column_constraint ::= [ CONSTRAINT {identifier} ] (
@@ -34,6 +35,12 @@ column_constraint ::= [ CONSTRAINT {identifier} ] (
 ) {
   extends = "com.alecstrong.sql.psi.core.psi.impl.SqlColumnConstraintImpl"
   implements = "com.alecstrong.sql.psi.core.psi.SqlColumnConstraint"
+  override = true
+}
+
+column_name ::= 'FOO' {
+  mixin = "com.alecstrong.sql.psi.core.postgresql.psi.mixins.ColumnNameMixin"
+  implements = "com.alecstrong.sql.psi.core.psi.SqlColumnName"
   override = true
 }
 
