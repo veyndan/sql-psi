@@ -3,8 +3,8 @@
   overrides="com.alecstrong.sql.psi.core.SqlParser"
   elementTypeClass = "com.alecstrong.sql.psi.core.SqlElementType"
 
-  implements="com.alecstrong.sql.psi.core.psi.SqlCompositeElement"
-  extends="com.alecstrong.sql.psi.core.psi.SqlCompositeElementImpl"
+  implements="com.alecstrong.sql.psi.core.postgresql.psi.PostgreSqlCompositeElement"
+  extends="com.alecstrong.sql.psi.core.postgresql.psi.PostgreSqlCompositeElementImpl"
   psiClassPrefix = "PostgreSql"
 
   parserImports=[
