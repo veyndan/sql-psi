@@ -2,7 +2,8 @@ package com.alecstrong.sql.psi.core
 
 import com.alecstrong.sql.psi.core.psi.LazyQuery
 import com.alecstrong.sql.psi.core.psi.NamedElement
-import com.alecstrong.sql.psi.core.psi.SqlCreateIndexStmt
+import com.alecstrong.sql.psi.core.psi.Schema
+import com.alecstrong.sql.psi.core.psi.SchemaContributor
 import com.alecstrong.sql.psi.core.psi.SqlCreateTableStmt
 import com.alecstrong.sql.psi.core.psi.SqlCreateTriggerStmt
 import com.alecstrong.sql.psi.core.psi.SqlCreateViewStmt
@@ -53,19 +54,21 @@ abstract class SqlFileBase(
     }
   }
 
-  open fun indexes(sqlStmtElement: PsiElement): Collection<SqlCreateIndexStmt> {
-    val result = MultiMap<String, SqlCreateIndexStmt>()
+  @Suppress("UNCHECKED_CAST")
+  internal inline fun <reified T> schema(sqlStmtElement: PsiElement? = null): Collection<T> {
+    var schema = Schema(emptyMap())
     iteratePreviousStatements { statement ->
-      if (order != null && sqlStmtElement.parent == statement) {
-        return@indexes result.values()
+      if (order != null && sqlStmtElement?.parent == statement) {
+        return@schema schema.types[T::class]?.values() as Collection<T>? ?: emptyList()
       }
-      statement.createIndexStmt?.let { result.putValue(it.indexName.text, it) }
-      statement.dropIndexStmt?.let { result.remove(it.indexName?.text) }
+      when (val contributor = statement.firstChild) {
+        is SchemaContributor -> schema = contributor.modifySchema(schema)
+      }
     }
-    return result.values()
+    return schema.types[T::class]?.values() as Collection<T>? ?: emptyList()
   }
 
-  open fun triggers(sqlStmtElement: PsiElement? = null): Collection<SqlCreateTriggerStmt> {
+  fun triggers(sqlStmtElement: PsiElement? = null): Collection<SqlCreateTriggerStmt> {
     val result = MultiMap<String, SqlCreateTriggerStmt>()
     iteratePreviousStatements { statement ->
       if (order != null && sqlStmtElement?.parent == statement) {
