@@ -85,7 +85,7 @@ internal abstract class CreateTableMixin(
         }
 
     // Check if there is an externally created unique index that matches the given columns.
-    containingFile.schema<SqlCreateIndexStmt>(this)
+    containingFile.schema<CreateIndexMixin>(this)
         .filter { it.isUnique() && it.indexedColumnList.all { it.collationName == null } }
         .forEach {
           val indexedColumns = it.indexedColumnList.map { it.columnName.name }

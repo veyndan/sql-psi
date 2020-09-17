@@ -8,5 +8,5 @@ internal interface SchemaContributor {
 }
 
 internal data class Schema(
-  val types: Map<KClass<*>, MultiMap<String, Any>>
+  val types: Map<KClass<out SchemaContributor>, MultiMap<String, SchemaContributor>>
 )

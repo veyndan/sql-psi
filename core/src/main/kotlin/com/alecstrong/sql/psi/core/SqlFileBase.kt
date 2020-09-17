@@ -55,7 +55,7 @@ abstract class SqlFileBase(
   }
 
   @Suppress("UNCHECKED_CAST")
-  internal inline fun <reified T> schema(sqlStmtElement: PsiElement? = null): Collection<T> {
+  internal inline fun <reified T : SchemaContributor> schema(sqlStmtElement: PsiElement? = null): Collection<T> {
     var schema = Schema(emptyMap())
     iteratePreviousStatements { statement ->
       if (order != null && sqlStmtElement?.parent == statement) {

@@ -17,9 +17,9 @@ internal abstract class CreateIndexMixin(
     SchemaContributor {
   override fun modifySchema(schema: Schema): Schema {
     val types = schema.types.toMutableMap()
-    val indexes = types[SqlCreateIndexStmt::class] ?: MultiMap()
+    val indexes = types[CreateIndexMixin::class] ?: MultiMap()
     indexes.putValue(indexName.text, this)
-    types[SqlCreateIndexStmt::class] = indexes
+    types[CreateIndexMixin::class] = indexes
     return schema.copy(
         types = types
     )
@@ -35,7 +35,7 @@ internal abstract class CreateIndexMixin(
   }
 
   override fun annotate(annotationHolder: SqlAnnotationHolder) {
-    if (containingFile.schema<SqlCreateIndexStmt>(this).any { it != this && it.indexName.text == indexName.text }) {
+    if (containingFile.schema<CreateIndexMixin>(this).any { it != this && it.indexName.text == indexName.text }) {
       annotationHolder.createErrorAnnotation(indexName, "Duplicate index name ${indexName.text}")
     }
     super.annotate(annotationHolder)
